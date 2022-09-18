@@ -4,7 +4,7 @@ import Logging as LG
 IDs = []
 
 def Get_Events():
-    url = "http://192.168.1.4:3012/api/app/get_schedule/v1?api_key=ADD YOUR API KEY"
+    url = "http://192.168.1.4:3012/api/app/get_schedule/v1?api_key=edb3d95f306b581411c7789c8d05ec89"
     resp = requests.get(url)
     
     ContentJ = resp.json()
@@ -21,7 +21,7 @@ def Get_Events():
         pass
 
 def Delete_Events():
-    url = "http://192.168.1.4:3012/api/app/delete_event/v1?api_key=ADD YOUR API KEY"
+    url = "http://192.168.1.4:3012/api/app/delete_event/v1?api_key=edb3d95f306b581411c7789c8d05ec89"
 
     for Nu_Id in IDs:
         body = {"id" : f"{Nu_Id}"}
@@ -29,7 +29,7 @@ def Delete_Events():
         LG.WriteLog(str(resp))
 
 def Create_Events(h,m,title):
-    url = "http://192.168.1.4:3012/api/app/create_event/v1?api_key=ADD YOUR API KEY"
+    url = "http://192.168.1.4:3012/api/app/create_event/v1?api_key=edb3d95f306b581411c7789c8d05ec89"
     body = {'enabled': 1, 
     'params': {'script': '#!/bin/sh\n\n/usr/sbin/shutdown -h now', 
     'annotate': 1, 'json': 0}, 

@@ -1,20 +1,19 @@
-from helium import *
 from bs4 import BeautifulSoup
 from time import sleep
-from selenium.webdriver import ChromeOptions
 import Logging as LG
+from scrapingant_client import ScrapingAntClient
 
 Code_List = []
 Disconnect_Time = []
+
 url = 'https://cebcare.ceb.lk/Incognito/DemandMgmtSchedule'
-options = ChromeOptions()
-options.add_argument("--proxy-server='direct://'")
-options.add_argument("--proxy-bypass-list=*")
-browser = start_chrome(url, headless= True ,options= options)  
+
+client = ScrapingAntClient(token='--Enter Your API--')
+page_content = client.general_request(url).content
 
 
 def GetPage():
-    soup = BeautifulSoup(browser.page_source, 'html.parser')
+    soup = BeautifulSoup(page_content, 'lxml')
     Cells = soup.find_all('div', {'class':'fc-content'})
 
     if(len(soup.find_all('div', {'class':'fc-content'})) > 0):
@@ -59,9 +58,6 @@ def RunScrapper():
     LG.WriteLog("Starting Scrapping !")
     GetPage()
 
-    browser.close()
-    browser.quit()
-    
     LG.WriteLog("Scrapping Finished !")
     LG.WriteLog("###################################################################################################")
 
