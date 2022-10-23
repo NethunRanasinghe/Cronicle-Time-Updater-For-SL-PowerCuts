@@ -1,62 +1,45 @@
-from bs4 import BeautifulSoup
-from time import sleep
 import Logging as LG
-from scrapingant_client import ScrapingAntClient
+import requests
+from datetime import datetime, timedelta
+requests.packages.urllib3.disable_warnings()
 
-Code_List = []
+S_Cookie = "Your_Cookie"
+
+S_Auth = "Auth_Token"
+
+Date1 = datetime.now().strftime('%Y-%m-%d')
+Date2 = datetime.now() + timedelta(days=1)
+
 Disconnect_Time = []
 
-url = 'https://cebcare.ceb.lk/Incognito/DemandMgmtSchedule'
+def GetValues(cookie, verify_token):
+    S_Headers = {
+            "Content-Type":"json",
+            "Cookie":cookie,
+            "RequestVerificationToken" : verify_token
+            }
 
-client = ScrapingAntClient(token='--Enter Your API--')
-page_content = client.general_request(url).content
+    S_URL = f"https://cebcare.ceb.lk/Incognito/GetCalendarData?from={Date1}&to={Date2.strftime('%Y-%m-%d')}&acctNo=Your_ACC_NU"
+
+    response = requests.get(url=S_URL,headers=S_Headers,verify=False)
+
+    GetTime(response.json())
 
 
-def GetPage():
-    soup = BeautifulSoup(page_content, 'lxml')
-    Cells = soup.find_all('div', {'class':'fc-content'})
+def GetTime(J_Content):
 
-    if(len(soup.find_all('div', {'class':'fc-content'})) > 0):
-        LG.WriteLog("Done !")
-        Code_List.append(Cells)
-        GetValues(Cells)
-    else:
-        LG.WriteLog("Trying Again ...")
-        sleep(3)
-        GetPage()
-
-def GetValues(Cell_List):
-    My_Group = []
-    Disconnect_Time_Temp = []
+    Interupts = J_Content['interruptions']
     
+    for v in Interupts:
+        if 'startTime' in v :
+            T_Time = v['startTime'].split('T')[1].split(":")
+            S_Time = T_Time[0] + ":" + T_Time[1]
 
-    #Add content of my group to a list
-    for items in Cell_List:
-        Group = items.find('div', class_="fc-title").text
-        
-        if Group == 'T':
-            My_Group.append(items)
-        else:
-            pass
-    
-    #Get Disconnect times
-    for content in My_Group:
-        DTime = content.find('div', class_="fc-time").text
-        Disconnect_Time_Temp.append(DTime)
-
-    for times in Disconnect_Time_Temp:
-        if("PM" in times):
-            CTimeP = times.split("PM")[0]
-            CTimeP = str(int(CTimeP.split(":")[0]) + 12) + ":" + CTimeP.split(":")[1]
-            Disconnect_Time.append(CTimeP)
-
-        elif("AM" in times):
-            CTimeA = times.split("AM")[0]
-            Disconnect_Time.append(CTimeA)
+            Disconnect_Time.append(S_Time) 
 
 def RunScrapper():
     LG.WriteLog("Starting Scrapping !")
-    GetPage()
+    GetValues(S_Cookie,S_Auth)
 
     LG.WriteLog("Scrapping Finished !")
     LG.WriteLog("###################################################################################################")

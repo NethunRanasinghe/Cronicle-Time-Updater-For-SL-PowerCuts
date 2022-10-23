@@ -10,4 +10,12 @@ iii. By default, it creates  shutdown shell scripts for the appropiate times. Ch
 
 iv. After success, it will send an email to the specified email address.
 
-**Don't Forget to Change the API keys for cronicle and webscrapping API**
+# Since this is not sesitive information I don't think it's illegal but plase use this responsibly.
+
+* You can get the cookie and auth(Request verification code) using inspect elements (https://cebcare.ceb.lk/Incognito/OutageMap) and checking the network -> Fetch/XHR
+* It is inside the request header.
+* For some reason this cookie and auth doesn't expire so you only have to set it once. 
+* Your electric bill account number will be on the CEB care app(You can also get your powerct group from the app) or inside any old electricity bills you recieved.
+
+
+**Don't Forget to Change the API keys and set the correct api endpoint for cronicle**
